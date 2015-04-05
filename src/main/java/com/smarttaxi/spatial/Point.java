@@ -13,6 +13,11 @@ public class Point {
     public Point() {
     }
 
+    public Point(double lat, double lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
+
 
     public double getLat() {
         return lat;
