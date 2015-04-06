@@ -24,7 +24,7 @@ public class PolygonService {
     @Autowired
     private ColorService colorService;
 
-    // TODO refactor
+    // TODO review ? refactor
     public GoogleMapPolygon getPolygon(List<? extends Spot> spotList, int cluster) {
         if (spotList.size() < 3) {
             return null;
@@ -33,17 +33,12 @@ public class PolygonService {
         PolygonStack pointsStack = new PolygonStack();
 
         List<Spot> horizontallySorted = new ArrayList<>(spotList);
-
         horizontallySorted.sort(new SpotLonComparator());
 
-        int i = 0;
+        pointsStack.push(horizontallySorted.get(0));
+        pointsStack.push(horizontallySorted.get(1));
 
-        pointsStack.push(horizontallySorted.get(i++)); // 1
-        pointsStack.push(horizontallySorted.get(i++)); // 2
-
-        Spot stopPoint = horizontallySorted.get(horizontallySorted.size() - 1); // right-stop
-
-        while (horizontallySorted.get(i).getId() != stopPoint.getId()) {
+        for (int i = 2; i < horizontallySorted.size(); i++) {
             Spot nextPoint = horizontallySorted.get(i);
 
             while (pointsStack.size() >= 2 &&
@@ -53,18 +48,13 @@ public class PolygonService {
             }
 
             pointsStack.push(nextPoint);
-            i++;
         }
-        pointsStack.push(stopPoint);
 
-        i = horizontallySorted.size() - 2;
-        pointsStack.push(horizontallySorted.get(i));
+        pointsStack.push(horizontallySorted.get(horizontallySorted.size() - 2));
 
         int stackSize = pointsStack.size();
 
-        stopPoint = horizontallySorted.get(0);
-
-        while (horizontallySorted.get(i).getId() != stopPoint.getId()) {
+        for (int i = horizontallySorted.size() - 3; i >= 0; i--) {
             Spot nextPoint = horizontallySorted.get(i);
 
             while (pointsStack.size() >= stackSize &&
@@ -73,8 +63,9 @@ public class PolygonService {
                 pointsStack.pop();
             }
 
-            pointsStack.push(nextPoint);
-            i--;
+            if (i != 0) {
+                pointsStack.push(nextPoint);
+            }
         }
 
         List<LatLon> latLonList = new ArrayList<>(pointsStack.asList().size());
@@ -89,10 +80,6 @@ public class PolygonService {
                 fillColor, 0.8, "#194915", 0.5, 3);
 
         return polygon;
-    }
-
-    public GoogleMapPolygon getPolygon(List<? extends Spot> spotList) {
-        return getPolygon(spotList, 0);
     }
 
 
