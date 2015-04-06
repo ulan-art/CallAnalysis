@@ -108,11 +108,13 @@ public class RigaMapPage extends CustomComponent implements View {
     public class ShowPolygonButton extends Button {
 
         public ShowPolygonButton() {
-            setCaption("Show polygon");
+            setCaption("Show polygons");
             addClickListener(new ClickListener() {
                 @Override
                 public void buttonClick(ClickEvent clickEvent) {
-                    mapPanel.showPolygon(0);
+                    for (int i = 0; i < 8; i++) {
+                        mapPanel.showPolygon(i);
+                    }
                 }
             });
         }

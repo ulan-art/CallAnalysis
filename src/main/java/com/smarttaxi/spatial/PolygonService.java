@@ -1,6 +1,7 @@
 package com.smarttaxi.spatial;
 
 import com.smarttaxi.data.domain.Spot;
+import com.smarttaxi.demo.ColorService;
 import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.tapio.googlemaps.client.overlays.GoogleMapPolygon;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,11 @@ public class PolygonService {
     @Autowired
     private CoordinatesService coordinatesService;
 
+    @Autowired
+    private ColorService colorService;
 
     // TODO refactor
-    public GoogleMapPolygon getPolygon(List<? extends Spot> spotList) {
-
+    public GoogleMapPolygon getPolygon(List<? extends Spot> spotList, int cluster) {
         if (spotList.size() < 3) {
             return null;
         }
@@ -46,7 +48,7 @@ public class PolygonService {
 
             while (pointsStack.size() >= 2 &&
                     coordinatesService.isBelow(
-                    pointsStack.getPreLast(), nextPoint, pointsStack.getLast())) {
+                            pointsStack.getPreLast(), nextPoint, pointsStack.getLast())) {
                 pointsStack.pop();
             }
 
@@ -81,10 +83,16 @@ public class PolygonService {
             latLonList.add(new LatLon(spot.getLat(), spot.getLon()));
         }
 
+        String fillColor = colorService.getColor(cluster);
+
         GoogleMapPolygon polygon = new GoogleMapPolygon(latLonList,
-                "#ae1f1f", 0.8, "#194915", 0.5, 3);
+                fillColor, 0.8, "#194915", 0.5, 3);
 
         return polygon;
+    }
+
+    public GoogleMapPolygon getPolygon(List<? extends Spot> spotList) {
+        return getPolygon(spotList, 0);
     }
 
 

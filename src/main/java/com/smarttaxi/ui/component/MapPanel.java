@@ -107,24 +107,28 @@ public class MapPanel extends CustomComponent {
     }
 
 
+    // TODO fix
     public void showCalls() {
         callMarkers = showSpots(callDao.getCallList(), false);
     }
 
+    // TODO fix
     public void hideCalls() {
         deleteMarkers(callMarkers);
     }
 
+    // TODO fix
     public void showCentres() {
         weightCentreMarkers = showSpots(districtDao.getWeightCentres(), false);
     }
 
+    // TODO fix
     public void hideCentres() {
         deleteMarkers(weightCentreMarkers);
     }
 
     public void showPolygon(int cluster) {
         List<Call> someGroupCalls = callDao.getCallList(cluster);
-        googleMap.addPolygonOverlay(polygonService.getPolygon(someGroupCalls));
+        googleMap.addPolygonOverlay(polygonService.getPolygon(someGroupCalls, cluster));
     }
 }
