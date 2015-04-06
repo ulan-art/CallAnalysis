@@ -52,4 +52,9 @@ public class CallDao {
         String query = "delete from calls";
         jdbcTemplate.update(query);
     }
+
+    public List<Call> getCallList(int groupId) {
+        String query = "select * from calls where groupn = ?";
+        return jdbcTemplate.query(query, new CallRowMapper(), groupId);
+    }
 }

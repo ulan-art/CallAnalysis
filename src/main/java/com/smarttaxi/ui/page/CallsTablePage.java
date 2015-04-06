@@ -5,7 +5,7 @@ import com.smarttaxi.data.dao.CallDao;
 import com.smarttaxi.data.dao.DistrictDao;
 import com.smarttaxi.data.domain.Call;
 import com.smarttaxi.data.domain.District;
-import com.smarttaxi.test.RandomCallsGenerator;
+import com.smarttaxi.demo.RandomCallsGenerator;
 import com.smarttaxi.ui.component.NavigationMenu;
 import com.smarttaxi.ui.component.YesNoWindow;
 import com.smarttaxi.ui.crud.CrudPanel;

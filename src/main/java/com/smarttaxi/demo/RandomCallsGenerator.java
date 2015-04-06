@@ -1,4 +1,4 @@
-package com.smarttaxi.test;
+package com.smarttaxi.demo;
 
 import com.smarttaxi.data.dao.CallDao;
 import com.smarttaxi.data.domain.Call;

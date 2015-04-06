@@ -1,4 +1,4 @@
-package com.smarttaxi.test;
+package com.smarttaxi.demo;
 
 import org.apache.log4j.Logger;
 

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * Created by Iwan on 05.04.2015
@@ -19,45 +18,66 @@ import java.util.Stack;
 public class PolygonService {
 
     @Autowired
-    CoordinatesService coordinatesService;
+    private CoordinatesService coordinatesService;
 
-    public GoogleMapPolygon getPolygon(List<Spot> spotList) {
 
-        if (spotList.size() < 4) {
+    // TODO refactor
+    public GoogleMapPolygon getPolygon(List<? extends Spot> spotList) {
+
+        if (spotList.size() < 3) {
             return null;
         }
 
-        Stack<Spot> pointsStack = new Stack<>();
+        PolygonStack pointsStack = new PolygonStack();
 
         List<Spot> horizontallySorted = new ArrayList<>(spotList);
-        List<Spot> verticallySorted = new ArrayList<>(spotList);
 
         horizontallySorted.sort(new SpotLonComparator());
-        verticallySorted.sort(new SpotLatComparator());
-
 
         int i = 0;
 
         pointsStack.push(horizontallySorted.get(i++)); // 1
         pointsStack.push(horizontallySorted.get(i++)); // 2
 
-        Spot stopPoint = verticallySorted.get(0); // top-stop
+        Spot stopPoint = horizontallySorted.get(horizontallySorted.size() - 1); // right-stop
 
         while (horizontallySorted.get(i).getId() != stopPoint.getId()) {
-            Spot preLastPoint = horizontallySorted.get(i - 2);
-            Spot lastPoint = horizontallySorted.get(i - 1);
             Spot nextPoint = horizontallySorted.get(i);
-            if (coordinatesService.isBelow(preLastPoint, nextPoint, lastPoint)) {
+
+            while (pointsStack.size() >= 2 &&
+                    coordinatesService.isBelow(
+                    pointsStack.getPreLast(), nextPoint, pointsStack.getLast())) {
                 pointsStack.pop();
             }
+
             pointsStack.push(nextPoint);
             i++;
         }
+        pointsStack.push(stopPoint);
+
+        i = horizontallySorted.size() - 2;
         pointsStack.push(horizontallySorted.get(i));
 
-        List<LatLon> latLonList = new ArrayList<>(pointsStack.size());
+        int stackSize = pointsStack.size();
 
-        for (Spot spot : pointsStack) {
+        stopPoint = horizontallySorted.get(0);
+
+        while (horizontallySorted.get(i).getId() != stopPoint.getId()) {
+            Spot nextPoint = horizontallySorted.get(i);
+
+            while (pointsStack.size() >= stackSize &&
+                    !coordinatesService.isBelow(
+                            pointsStack.getPreLast(), nextPoint, pointsStack.getLast())) {
+                pointsStack.pop();
+            }
+
+            pointsStack.push(nextPoint);
+            i--;
+        }
+
+        List<LatLon> latLonList = new ArrayList<>(pointsStack.asList().size());
+
+        for (Spot spot : pointsStack.asList()) {
             latLonList.add(new LatLon(spot.getLat(), spot.getLon()));
         }
 
@@ -67,20 +87,6 @@ public class PolygonService {
         return polygon;
     }
 
-
-    private class SpotLatComparator implements Comparator<Spot> {
-
-        @Override
-        public int compare(Spot spot1, Spot spot2) {
-            if (spot1.getLat() > spot2.getLat()) {
-                return 1;
-            }
-            if (spot1.getLat() < spot2.getLat()) {
-                return -1;
-            }
-            return 0;
-        }
-    }
 
     private class SpotLonComparator implements Comparator<Spot> {
 
