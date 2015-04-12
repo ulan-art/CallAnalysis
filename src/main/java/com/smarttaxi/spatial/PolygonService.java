@@ -76,10 +76,8 @@ public class PolygonService {
 
         String fillColor = colorService.getColor(cluster);
 
-        GoogleMapPolygon polygon = new GoogleMapPolygon(latLonList,
+        return new GoogleMapPolygon(latLonList,
                 fillColor, 0.8, "#194915", 0.5, 3);
-
-        return polygon;
     }
 
 

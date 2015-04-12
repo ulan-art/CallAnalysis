@@ -12,12 +12,17 @@ import com.smarttaxi.ui.crud.CrudPanel;
 import com.smarttaxi.ui.service.dictionary.CallsDictionary;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 
@@ -26,6 +31,8 @@ import java.util.List;
  */
 
 public class CallsTablePage extends CustomComponent implements View {
+
+    final static Logger log = Logger.getLogger(CallsTablePage.class);
 
     private CallDao callDao = Application.getBean(CallDao.class);
     private DistrictDao districtDao = Application.getBean(DistrictDao.class);
@@ -77,9 +84,7 @@ public class CallsTablePage extends CustomComponent implements View {
                 addClickListener(new ClickListener() {
                     @Override
                     public void buttonClick(ClickEvent clickEvent) {
-                        List<District> weightCentres = districtDao.getWeightCentres();
-                        callsGenerator.generateRandomCalls(weightCentres, 150);
-                        fetchTableContainer();
+                        UI.getCurrent().addWindow(new GenerateCallsForm());
                     }
                 });
             }
@@ -102,6 +107,50 @@ public class CallsTablePage extends CustomComponent implements View {
                         UI.getCurrent().addWindow(yesNoWindow);
                     }
                 });
+            }
+        }
+
+        public class GenerateCallsForm extends Window {
+
+            private TextField textField;
+
+            public GenerateCallsForm() {
+                setCaption("Generate random calls");
+                center();
+                setResizable(false);
+                setModal(true);
+
+                FormLayout formLayout = new FormLayout();
+                formLayout.setMargin(true);
+                formLayout.setSpacing(true);
+
+                textField = new TextField("Number of calls");
+                textField.setNullRepresentation("");
+                textField.setConverter(new StringToIntegerConverter());
+                textField.setRequired(true);
+
+                formLayout.addComponent(textField);
+                formLayout.addComponent(new ConfirmGenerateButton());
+
+                setContent(formLayout);
+            }
+
+            public class ConfirmGenerateButton extends Button {
+                public ConfirmGenerateButton() {
+                    setCaption("Generate");
+                    addClickListener(new ClickListener() {
+                        @Override
+                        public void buttonClick(ClickEvent clickEvent) {
+                            if (textField.getValue() != null) {
+                                int calls = Integer.parseInt(textField.getValue());
+                                List<District> weightCentres = districtDao.getWeightCentres();
+                                callsGenerator.generateRandomCalls(weightCentres, calls);
+                                fetchTableContainer();
+                                close();
+                            }
+                        }
+                    });
+                }
             }
         }
     }
