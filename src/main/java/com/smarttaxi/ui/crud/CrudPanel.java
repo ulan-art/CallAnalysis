@@ -30,7 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public abstract class CrudPanel extends CustomComponent {
 
-    final static Logger log = Logger.getLogger(CrudPanel.class);
+    private final static Logger log = Logger.getLogger(CrudPanel.class);
 
     private String entityName;
     private Dictionary dictionary;

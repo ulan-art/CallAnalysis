@@ -4,6 +4,7 @@ import com.smarttaxi.config.Application;
 import com.smarttaxi.data.dao.DistrictDao;
 import com.smarttaxi.data.domain.District;
 import com.smarttaxi.ui.component.MapPanel;
+import com.smarttaxi.ui.component.MethodsMenu;
 import com.smarttaxi.ui.component.NavigationMenu;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -48,6 +49,7 @@ public class RigaMapPage extends CustomComponent implements View {
         pageLayout.addComponent(new NavigationMenu());
         pageLayout.addComponent(mapPanel);
         pageLayout.addComponent(menuLayout);
+        pageLayout.addComponent(new MethodsMenu());
 
         setCompositionRoot(pageLayout);
     }

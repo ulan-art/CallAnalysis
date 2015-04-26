@@ -1,5 +1,6 @@
 package com.smarttaxi.ui.component;
 
+import com.smarttaxi.analysis.Classifiable;
 import com.smarttaxi.config.Application;
 import com.smarttaxi.data.dao.CallDao;
 import com.smarttaxi.data.dao.DistrictDao;
@@ -83,12 +84,13 @@ public class MapPanel extends CustomComponent {
         if (!visible) {
             List<GoogleMapMarker> markerList = new ArrayList<>(spotList.size());
             for (Spot spot : spotList) {
+                Classifiable element = (Classifiable) spot;
                 GoogleMapMarker marker = new GoogleMapMarker(
                         spot.getNotes(),
                         new LatLon(
                                 spot.getLat(),
                                 spot.getLon()),
-                        false, colorService.getSmallPointerUrl(spot.getGroup()));
+                        false, colorService.getSmallPointerUrl(element.getCluster()));
                 markerList.add(marker);
                 googleMap.addMarker(marker);
             }

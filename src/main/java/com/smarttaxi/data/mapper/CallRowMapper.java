@@ -21,7 +21,7 @@ public class CallRowMapper implements RowMapper<Call> {
         call.setPhone(resultSet.getString("phone"));
         call.setLat(resultSet.getDouble("lat"));
         call.setLon(resultSet.getDouble("lon"));
-        call.setGroup(resultSet.getInt("groupn"));
+        call.setCluster(resultSet.getInt("cluster"));
 
         return call;
     }

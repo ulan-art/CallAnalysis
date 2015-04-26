@@ -1,10 +1,15 @@
 package com.smarttaxi.data.domain;
 
+import com.smarttaxi.analysis.Classifiable;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+
 /**
  * Created by Iwan on 21.03.2015
  */
 
-public class Call implements Spot {
+public class Call implements Spot, Classifiable {
 
     private long id;
 
@@ -14,7 +19,7 @@ public class Call implements Spot {
     private String notes;
     private String phone;
 
-    private int group;
+    private int cluster;
 
 
     public Call() {
@@ -63,11 +68,43 @@ public class Call implements Spot {
     }
 
     @Override
-    public int getGroup() {
-        return group;
+    public int getCluster() {
+        return cluster;
     }
 
-    public void setGroup(int group) {
-        this.group = group;
+    @Override
+    public boolean setCluster(int cluster) {
+        if (this.cluster == cluster) {
+            return false;
+        }
+        this.cluster = cluster;
+        return true;
+    }
+
+
+    @Override
+    public double getDistance(Classifiable object) {
+        Call that = (Call) object;
+        return Math.sqrt(
+                Math.pow(lat - that.getLat(), 2) +
+                        Math.pow(lon - that.getLon(), 2));
+    }
+
+    @Override
+    public Call getMean(List<Classifiable> list) {
+        if (!CollectionUtils.isEmpty(list)) {
+            double latSum = 0;
+            double lonSum = 0;
+            for (Classifiable c : list) {
+                latSum += ((Call) c).getLat();
+                lonSum += ((Call) c).getLon();
+            }
+            int n = list.size();
+            Call mean = new Call();
+            mean.setLat(latSum / n);
+            mean.setLon(lonSum / n);
+            return mean;
+        }
+        return null;
     }
 }

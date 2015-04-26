@@ -1,7 +1,7 @@
 package com.smarttaxi.data.dao;
 
-import com.smarttaxi.data.mapper.CallRowMapper;
 import com.smarttaxi.data.domain.Call;
+import com.smarttaxi.data.mapper.CallRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -41,9 +41,9 @@ public class CallDao {
         params.put("lon", call.getLon());
         params.put("notes", call.getNotes());
         params.put("phone", call.getPhone());
-        params.put("group", call.getGroup());
-        String query = "insert into calls (lat, lon, notes, phone, groupn) " +
-                "values (:lat, :lon, :notes, :phone, :group)";
+        params.put("cluster", call.getCluster());
+        String query = "insert into calls (lat, lon, notes, phone, cluster) " +
+                "values (:lat, :lon, :notes, :phone, :cluster)";
         namedParameterJdbcTemplate.update(query, params);
     }
 
@@ -54,7 +54,22 @@ public class CallDao {
     }
 
     public List<Call> getCallList(int groupId) {
-        String query = "select * from calls where groupn = ?";
+        String query = "select * from calls where cluster = ?";
         return jdbcTemplate.query(query, new CallRowMapper(), groupId);
+    }
+
+
+    @Transactional
+    public void updateClusters(List<Call> callList) {
+        for (Call call : callList) {
+            updateCluster(call);
+        }
+    }
+
+    private void updateCluster(Call call) {
+        String query = "UPDATE calls SET " +
+                "cluster = ? " +
+                "WHERE id = ?";
+        jdbcTemplate.update(query, call.getCluster(), call.getId());
     }
 }

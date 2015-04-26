@@ -35,7 +35,7 @@ public class RandomCallsGenerator {
             totalWeight += district.getWeight();
         }
 
-        int group = 0;
+        int cluster = 0;
 
         for (District district : weightCentres) {
             long callsFromHere = Math.round(calls * district.getWeight() / totalWeight);
@@ -46,10 +46,10 @@ public class RandomCallsGenerator {
                         district.getLat(), district.getLon(), 1);
                 randomCall.setLat(point.getLat());
                 randomCall.setLon(point.getLon());
-                randomCall.setGroup(group);
+                randomCall.setCluster(cluster);
                 callDao.saveCall(randomCall);
             }
-            group++;
+            cluster++;
         }
     }
 }

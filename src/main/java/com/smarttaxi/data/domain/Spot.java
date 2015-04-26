@@ -10,5 +10,4 @@ public interface Spot {
     double getLat();
     double getLon();
     String getNotes();
-    int getGroup();
 }

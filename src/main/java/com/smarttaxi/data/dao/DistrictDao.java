@@ -47,8 +47,8 @@ public class DistrictDao {
 
     @Transactional
     public void saveDistrict(District district) {
-        String query = "INSERT INTO district (lat, lon, name, notes, weight, marker_type, groupn) " +
-                "VALUES (:lat, :lon, :name, :notes, :weight, :marker_type, :group)";
+        String query = "INSERT INTO district (lat, lon, name, notes, weight, marker_type, cluster) " +
+                "VALUES (:lat, :lon, :name, :notes, :weight, :marker_type, :cluster)";
         namedParameterJdbcTemplate.update(query, toParams(district));
     }
 
@@ -61,7 +61,7 @@ public class DistrictDao {
                 "notes = :notes, " +
                 "weight = :weight," +
                 "marker_type = :marker_type, " +
-                "groupn = :group " +
+                "cluster = :group " +
                 "WHERE id = :id";
         namedParameterJdbcTemplate.update(query, toParams(district));
     }
@@ -78,7 +78,7 @@ public class DistrictDao {
         params.put("weight", district.getWeight());
         params.put("marker_type",
                 district.getType() != null ? district.getType().toString() : null);
-        params.put("group", district.getGroup());
+        params.put("cluster", district.getCluster());
         return params;
     }
 

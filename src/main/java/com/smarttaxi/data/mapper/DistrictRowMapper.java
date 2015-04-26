@@ -28,7 +28,7 @@ public class DistrictRowMapper implements RowMapper<District> {
         district.setLat(resultSet.getDouble("lat"));
         district.setLon(resultSet.getDouble("lon"));
         district.setWeight(resultSet.getDouble("weight"));
-        district.setGroup(resultSet.getInt("groupn"));
+        district.setCluster(resultSet.getInt("cluster"));
 
         return district;
     }

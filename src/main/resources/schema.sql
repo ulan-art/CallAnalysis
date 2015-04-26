@@ -4,7 +4,7 @@ CREATE TABLE calls (
   lon float,
   notes varchar(255) DEFAULT NULL,
   phone varchar(15) DEFAULT NULL,
-  groupn int,
+  cluster int,
   PRIMARY KEY (id)
 );
 
@@ -16,6 +16,11 @@ CREATE TABLE district (
   notes varchar(255) DEFAULT NULL,
   weight float,
   marker_type varchar(24) DEFAULT NULL,
-  groupn int,
+  cluster int,
   PRIMARY KEY (id)
 );
+
+-- 26 apr 2015
+
+# ALTER TABLE taxi.district CHANGE groupn cluster INT;
+# ALTER TABLE taxi.calls CHANGE groupn cluster INT;

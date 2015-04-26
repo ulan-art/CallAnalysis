@@ -22,7 +22,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
-import org.apache.log4j.Logger;
 
 import java.util.List;
 
@@ -31,8 +30,6 @@ import java.util.List;
  */
 
 public class CallsTablePage extends CustomComponent implements View {
-
-    final static Logger log = Logger.getLogger(CallsTablePage.class);
 
     private CallDao callDao = Application.getBean(CallDao.class);
     private DistrictDao districtDao = Application.getBean(DistrictDao.class);

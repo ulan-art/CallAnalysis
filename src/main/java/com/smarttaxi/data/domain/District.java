@@ -1,12 +1,15 @@
 package com.smarttaxi.data.domain;
 
+import com.smarttaxi.analysis.Classifiable;
 import com.smarttaxi.model.domain.MarkerType;
+
+import java.util.List;
 
 /**
  * Created by Iwan on 22.03.2015
  */
 
-public class District implements Spot {
+public class District implements Spot, Classifiable {
 
     private long id;
 
@@ -20,7 +23,7 @@ public class District implements Spot {
 
     private MarkerType type;
 
-    private int group;
+    private int cluster;
 
 
     public District() {
@@ -88,11 +91,23 @@ public class District implements Spot {
     }
 
     @Override
-    public int getGroup() {
-        return group;
+    public int getCluster() {
+        return cluster;
     }
 
-    public void setGroup(int group) {
-        this.group = group;
+    @Override
+    public boolean setCluster(int cluster) {
+        this.cluster = cluster;
+        return false;
+    }
+
+    @Override
+    public double getDistance(Classifiable object) {
+        return 0;
+    }
+
+    @Override
+    public Classifiable getMean(List<Classifiable> list) {
+        return null;
     }
 }
