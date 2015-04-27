@@ -36,10 +36,12 @@ public class KMeansMethod {
 
         List<Cluster> clusterList = distributeItemsRandomly();
 
+        int i = 1;
         while(clustersChanged) {
             clustersChanged = false;
             List<Classifiable> means = getMeans(clusterList);
             clusterList = rearrangeClusters(means);
+            log.info("Performed step " + i + ", clusters changed: " + clustersChanged);
         }
 
         return items;
@@ -65,7 +67,8 @@ public class KMeansMethod {
     private List<Classifiable> getMeans(List<Cluster> clusterList) {
         List<Classifiable> means = new ArrayList<>(k);
         for (Cluster cluster : clusterList) {
-            means.add(cluster.getCentre());
+            Classifiable centre = cluster.getCentre();
+            means.add(centre);
         }
         return means;
     }
@@ -73,13 +76,17 @@ public class KMeansMethod {
     private List<Cluster> rearrangeClusters(List<Classifiable> means) {
         List<Cluster> clusterList = createEmptyClusters();
         for (Classifiable item : items) {
-            int closestCluster = 0;
-            double bestDistance = item.getDistance(means.get(closestCluster));
-            for (int i = 1; i < k; i++) {
-                double newDistance = item.getDistance(means.get(i));
-                if (newDistance < bestDistance) {
-                    closestCluster = i;
-                    bestDistance = newDistance;
+            int closestCluster = -1;
+            double bestDistance = Double.MAX_VALUE;
+
+            for (int i = 0; i < k; i++) {
+                Classifiable mean = means.get(i);
+                if (mean != null) {
+                    double newDistance = item.getDistance(mean);
+                    if (newDistance < bestDistance) {
+                        closestCluster = i;
+                        bestDistance = newDistance;
+                    }
                 }
             }
             clustersChanged |= clusterList.get(closestCluster).addItem(item);
