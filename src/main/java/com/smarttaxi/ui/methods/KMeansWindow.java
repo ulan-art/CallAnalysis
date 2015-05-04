@@ -1,5 +1,7 @@
 package com.smarttaxi.ui.methods;
 
+import com.smarttaxi.analysis.Entity;
+import com.smarttaxi.analysis.EntityConverter;
 import com.smarttaxi.analysis.KMeansMethod;
 import com.smarttaxi.config.Application;
 import com.smarttaxi.data.dao.CallDao;
@@ -21,6 +23,7 @@ import java.util.List;
 public class KMeansWindow extends Window {
 
     private CallDao callDao = Application.getBean(CallDao.class);
+    private EntityConverter entityConverter = Application.getBean(EntityConverter.class);
 
     private TextField textField;
 
@@ -58,9 +61,11 @@ public class KMeansWindow extends Window {
                     if (textField.isValid()) {
                         int k = Integer.parseInt(textField.getValue());
                         List<Call> callList = callDao.getCallList();
-                        KMeansMethod kMeansMethod = new KMeansMethod(callList, k);
-                        List<Call> classifiedList = (List<Call>) kMeansMethod.perform();
-                        callDao.updateClusters(classifiedList);
+                        List<Entity> entityList = entityConverter.geEntityList(callList);
+                        KMeansMethod kMeansMethod = new KMeansMethod(entityList, k);
+                        List<Entity> classification = kMeansMethod.perform();
+                        entityConverter.updateClusters(callList, classification);
+                        callDao.updateClusters(callList);
                         close();
                     } else {
                         Notifications.showWarning(

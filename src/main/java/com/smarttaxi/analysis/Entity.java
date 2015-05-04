@@ -1,30 +1,20 @@
-package com.smarttaxi.data.domain;
+package com.smarttaxi.analysis;
 
 /**
- * Created by Iwan on 21.03.2015
+ * Created by Iwan on 04.05.2015
  */
 
-public class Call {
+public class Entity {
 
     private long id;
-
     private double lat;
     private double lon;
-
-    private String notes;
-    private String phone;
-
     private int cluster;
 
 
-    public Call() {
-        super();
+    public Entity() {
     }
 
-
-    public String getNotes() {
-        return notes;
-    }
 
     public long getId() {
         return id;
@@ -50,23 +40,15 @@ public class Call {
         this.lon = lon;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public int getCluster() {
         return cluster;
     }
 
-    public void setCluster(int cluster) {
-        this.cluster = cluster;
+    public boolean setCluster(int cluster) {
+        if (this.cluster != cluster) {
+            this.cluster = cluster;
+            return true;
+        }
+        return false;
     }
 }

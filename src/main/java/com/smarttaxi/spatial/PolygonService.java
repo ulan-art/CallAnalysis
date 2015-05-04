@@ -1,6 +1,5 @@
 package com.smarttaxi.spatial;
 
-import com.smarttaxi.data.domain.Spot;
 import com.smarttaxi.demo.ColorService;
 import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.tapio.googlemaps.client.overlays.GoogleMapPolygon;
@@ -25,21 +24,21 @@ public class PolygonService {
     private ColorService colorService;
 
     // TODO review ? refactor
-    public GoogleMapPolygon getPolygon(List<? extends Spot> spotList, int cluster) {
-        if (spotList.size() < 3) {
+    public GoogleMapPolygon getPolygon(List<Point> pointList, int cluster) {
+        if (pointList.size() < 3) {
             return null;
         }
 
         PolygonStack pointsStack = new PolygonStack();
 
-        List<Spot> horizontallySorted = new ArrayList<>(spotList);
-        horizontallySorted.sort(new SpotLonComparator());
+        List<Point> horizontallySorted = new ArrayList<>(pointList);
+        horizontallySorted.sort(new PointLonComparator());
 
         pointsStack.push(horizontallySorted.get(0));
         pointsStack.push(horizontallySorted.get(1));
 
         for (int i = 2; i < horizontallySorted.size(); i++) {
-            Spot nextPoint = horizontallySorted.get(i);
+            Point nextPoint = horizontallySorted.get(i);
 
             while (pointsStack.size() >= 2 &&
                     coordinatesService.isBelow(
@@ -55,7 +54,7 @@ public class PolygonService {
         int stackSize = pointsStack.size();
 
         for (int i = horizontallySorted.size() - 3; i >= 0; i--) {
-            Spot nextPoint = horizontallySorted.get(i);
+            Point nextPoint = horizontallySorted.get(i);
 
             while (pointsStack.size() >= stackSize &&
                     !coordinatesService.isBelow(
@@ -70,8 +69,8 @@ public class PolygonService {
 
         List<LatLon> latLonList = new ArrayList<>(pointsStack.asList().size());
 
-        for (Spot spot : pointsStack.asList()) {
-            latLonList.add(new LatLon(spot.getLat(), spot.getLon()));
+        for (Point point : pointsStack.asList()) {
+            latLonList.add(new LatLon(point.getLat(), point.getLon()));
         }
 
         String fillColor = colorService.getColor(cluster);
@@ -81,14 +80,14 @@ public class PolygonService {
     }
 
 
-    private class SpotLonComparator implements Comparator<Spot> {
+    private class PointLonComparator implements Comparator<Point> {
 
         @Override
-        public int compare(Spot spot1, Spot spot2) {
-            if (spot1.getLon() > spot2.getLon()) {
+        public int compare(Point point1, Point point2) {
+            if (point1.getLon() > point2.getLon()) {
                 return 1;
             }
-            if (spot1.getLon() < spot2.getLon()) {
+            if (point1.getLon() < point2.getLon()) {
                 return -1;
             }
             return 0;

@@ -34,10 +34,4 @@ public class Point {
     public void setLon(double lon) {
         this.lon = lon;
     }
-
-
-    public double getDistance(Point anotherPoint) {
-        // TODO
-        return 0;
-    }
 }

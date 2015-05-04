@@ -1,7 +1,5 @@
 package com.smarttaxi.spatial;
 
-import com.smarttaxi.data.domain.Spot;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,13 +9,13 @@ import java.util.List;
 
 public class PolygonStack {
 
-    private List<Spot> stack = new LinkedList<>();
+    private List<Point> stack = new LinkedList<>();
     private int top = -1;
 
 
-    public void push(Spot spot) {
+    public void push(Point point) {
         top++;
-        stack.add(spot);
+        stack.add(point);
     }
 
     public void pop() {
@@ -27,14 +25,14 @@ public class PolygonStack {
         }
     }
 
-    public Spot getLast() {
+    public Point getLast() {
         if (top >= 0) {
             return stack.get(top);
         }
         return null;
     }
 
-    public Spot getPreLast() {
+    public Point getPreLast() {
         if (top >= 1) {
             return stack.get(top - 1);
         }
@@ -45,7 +43,7 @@ public class PolygonStack {
         return stack.size();
     }
 
-    public List<Spot> asList() {
+    public List<Point> asList() {
         return stack;
     }
 }

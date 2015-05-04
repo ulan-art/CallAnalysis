@@ -5,8 +5,9 @@ import com.smarttaxi.data.dao.CallDao;
 import com.smarttaxi.data.dao.DistrictDao;
 import com.smarttaxi.data.domain.Call;
 import com.smarttaxi.data.domain.District;
-import com.smarttaxi.data.domain.Spot;
 import com.smarttaxi.demo.ColorService;
+import com.smarttaxi.spatial.Point;
+import com.smarttaxi.spatial.PointConverter;
 import com.smarttaxi.spatial.PolygonService;
 import com.vaadin.tapio.googlemaps.GoogleMap;
 import com.vaadin.tapio.googlemaps.client.LatLon;
@@ -26,6 +27,8 @@ public class MapPanel extends CustomComponent {
 
     private CallDao callDao = Application.getBean(CallDao.class);
     private DistrictDao districtDao = Application.getBean(DistrictDao.class);
+
+    private PointConverter pointConverter = Application.getBean(PointConverter.class);
 
     private PolygonService polygonService = Application.getBean(PolygonService.class);
     private ColorService colorService = Application.getBean(ColorService.class);
@@ -79,17 +82,36 @@ public class MapPanel extends CustomComponent {
     }
 
 
-    private List<GoogleMapMarker> showSpots(List<? extends Spot> spotList, boolean visible) {
+    private List<GoogleMapMarker> showSpots(List<District> districtList, boolean visible) {
         if (!visible) {
-            List<GoogleMapMarker> markerList = new ArrayList<>(spotList.size());
-            for (Spot spot : spotList) {
+            List<GoogleMapMarker> markerList = new ArrayList<>(districtList.size());
+            for (District district : districtList) {
                 GoogleMapMarker marker = new GoogleMapMarker(
-                        spot.getNotes() + "\n" +
-                        "Cluster: " + ((Call) spot).getCluster(),
+                        district.getNotes() + "\n" +
+                                "Cluster: " + district.getCluster(),
                         new LatLon(
-                                spot.getLat(),
-                                spot.getLon()),
-                        false, colorService.getSmallPointerUrl(((Call) spot).getCluster()));
+                                district.getLat(),
+                                district.getLon()),
+                        false, colorService.getSmallPointerUrl(district.getCluster()));
+                markerList.add(marker);
+                googleMap.addMarker(marker);
+            }
+            return markerList;
+        }
+        return new LinkedList<>();
+    }
+
+    private List<GoogleMapMarker> showCalls(List<Call> callList, boolean visible) {
+        if (!visible) {
+            List<GoogleMapMarker> markerList = new ArrayList<>(callList.size());
+            for (Call call : callList) {
+                GoogleMapMarker marker = new GoogleMapMarker(
+                        call.getNotes() + "\n" +
+                                "Cluster: " + call.getCluster(),
+                        new LatLon(
+                                call.getLat(),
+                                call.getLon()),
+                        false, colorService.getSmallPointerUrl(call.getCluster()));
                 markerList.add(marker);
                 googleMap.addMarker(marker);
             }
@@ -110,7 +132,7 @@ public class MapPanel extends CustomComponent {
 
     // TODO fix
     public void showCalls() {
-        callMarkers = showSpots(callDao.getCallList(), false);
+        callMarkers = showCalls(callDao.getCallList(), false);
     }
 
     // TODO fix
@@ -130,6 +152,7 @@ public class MapPanel extends CustomComponent {
 
     public void showPolygon(int cluster) {
         List<Call> someGroupCalls = callDao.getCallList(cluster);
-        googleMap.addPolygonOverlay(polygonService.getPolygon(someGroupCalls, cluster));
+        List<Point> pointList = pointConverter.getPointList(someGroupCalls);
+        googleMap.addPolygonOverlay(polygonService.getPolygon(pointList, cluster));
     }
 }

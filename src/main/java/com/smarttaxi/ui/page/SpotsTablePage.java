@@ -3,7 +3,6 @@ package com.smarttaxi.ui.page;
 import com.smarttaxi.config.Application;
 import com.smarttaxi.data.dao.DistrictDao;
 import com.smarttaxi.data.domain.District;
-import com.smarttaxi.data.domain.Spot;
 import com.smarttaxi.model.domain.MarkerType;
 import com.smarttaxi.ui.component.NavigationMenu;
 import com.smarttaxi.ui.crud.CrudPanel;
@@ -45,8 +44,9 @@ public class SpotsTablePage extends CustomComponent implements View {
             setEntityName("spot");
             setDictionary(new SpotsDictionary());
             addCrudButtons();
-            setItemFormType(DistrictForm.class);
             fetchTableContainer();
+            setVisibleColumns("id", "name", "notes", "type", "lat", "lon", "weight");
+            setItemFormType(DistrictForm.class);
         }
 
 
@@ -70,7 +70,7 @@ public class SpotsTablePage extends CustomComponent implements View {
 
         @Override
         protected Class getEntityType() {
-            return Spot.class;
+            return District.class;
         }
 
         @Override

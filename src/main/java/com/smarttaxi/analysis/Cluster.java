@@ -1,7 +1,5 @@
 package com.smarttaxi.analysis;
 
-import com.smarttaxi.data.domain.Call;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,14 +10,14 @@ import java.util.List;
 public class Cluster {
 
     private int id;
-    private List<Call> items;
+    private List<Entity> items;
 
 
     public Cluster(int id) {
-        this(id, new LinkedList<Call>());
+        this(id, new LinkedList<Entity>());
     }
 
-    public Cluster(int id, List<Call> items) {
+    public Cluster(int id, List<Entity> items) {
         this.id = id;
         if (items != null) {
             this.items = items;
@@ -33,16 +31,16 @@ public class Cluster {
         return id;
     }
 
-    public boolean addItem(Call item) {
+    public boolean addItem(Entity item) {
         items.add(item);
         return item.setCluster(id);
     }
 
-    public Call removeLast() {
+    public Entity removeLast() {
         return items.remove(items.size() - 1);
     }
 
-    public Call getCentre() {
+    public Entity getCentre() {
         int n = items.size();
         if (n == 0) {
             return null;
@@ -59,7 +57,7 @@ public class Cluster {
         return items.size();
     }
 
-    public List<Call> getItems() {
+    public List<Entity> getItems() {
         return items;
     }
 }

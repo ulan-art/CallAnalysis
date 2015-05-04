@@ -1,6 +1,5 @@
 package com.smarttaxi.spatial;
 
-import com.smarttaxi.data.domain.Spot;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -75,14 +74,5 @@ public class CoordinatesService {
         double b = p1.getLat() - p1.getLon() * k;
 
         return k * point.getLon() + b > point.getLat();
-    }
-
-    public boolean isBelow(Spot startPoint, Spot endPoint, Spot point) {
-        return isBelow(getPoint(startPoint), getPoint(endPoint), getPoint(point));
-    }
-
-
-    private Point getPoint(Spot spot) {
-        return new Point(spot.getLat(), spot.getLon());
     }
 }

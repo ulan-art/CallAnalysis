@@ -1,7 +1,6 @@
 package com.smarttaxi.analysis;
 
 import com.smarttaxi.config.Application;
-import com.smarttaxi.data.domain.Call;
 import com.smarttaxi.log.ApplicationLogger;
 import org.apache.log4j.Logger;
 
@@ -19,11 +18,11 @@ public class KMeansMethod {
 
     private ApplicationLogger appLevelLog = Application.getBean(ApplicationLogger.class);
 
-    private List<Call> items;
+    private List<Entity> items;
     private int k;
     private boolean clustersChanged = true;
 
-    public KMeansMethod(List<Call> items, int k) {
+    public KMeansMethod(List<Entity> items, int k) {
         if (items != null) {
             this.items = items;
         } else {
@@ -32,7 +31,7 @@ public class KMeansMethod {
         this.k = k;
     }
 
-    public List<Call> perform() {
+    public List<Entity> perform() {
         appLevelLog.addRecord("K Means analysis performed for k = " + k);
         if (k == 1) {
             distributeItemsRandomly();
@@ -44,7 +43,7 @@ public class KMeansMethod {
         int i = 1;
         while(clustersChanged) {
             clustersChanged = false;
-            List<Call> means = getMeans(clusterList);
+            List<Entity> means = getMeans(clusterList);
             clusterList = rearrangeClusters(means);
             balanceClusters(clusterList);
             appLevelLog.addRecord("Performed step " + i++ + ", clusters changed: " + clustersChanged);
@@ -78,23 +77,23 @@ public class KMeansMethod {
         return clusterList;
     }
 
-    private List<Call> getMeans(List<Cluster> clusterList) {
-        List<Call> means = new ArrayList<>(k);
+    private List<Entity> getMeans(List<Cluster> clusterList) {
+        List<Entity> means = new ArrayList<>(k);
         for (Cluster cluster : clusterList) {
-            Call centre = cluster.getCentre();
+            Entity centre = cluster.getCentre();
             means.add(centre);
         }
         return means;
     }
 
-    private List<Cluster> rearrangeClusters(List<Call> means) {
+    private List<Cluster> rearrangeClusters(List<Entity> means) {
         List<Cluster> clusterList = createEmptyClusters();
-        for (Call item : items) {
+        for (Entity item : items) {
             int closestCluster = -1;
             double bestDistance = Double.MAX_VALUE;
 
             for (int i = 0; i < k; i++) {
-                Call mean = means.get(i);
+                Entity mean = means.get(i);
                 if (mean != null) {
                     double newDistance = NumericParameters.getDistance(item, mean);
                     if (newDistance < bestDistance) {

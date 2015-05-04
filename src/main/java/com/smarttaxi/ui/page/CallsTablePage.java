@@ -53,6 +53,7 @@ public class CallsTablePage extends CustomComponent implements View {
             addCustomButton(new GenerateCallsButton());
             addCustomButton(new DeleteAllCallsButton());
             fetchTableContainer();
+            setVisibleColumns("id", "notes", "lat", "lon", "cluster");
         }
 
 

@@ -1,15 +1,12 @@
 package com.smarttaxi.data.domain;
 
-import com.smarttaxi.analysis.Classifiable;
 import com.smarttaxi.model.domain.MarkerType;
-
-import java.util.List;
 
 /**
  * Created by Iwan on 22.03.2015
  */
 
-public class District implements Spot, Classifiable {
+public class District  {
 
     private long id;
 
@@ -30,7 +27,6 @@ public class District implements Spot, Classifiable {
     }
 
 
-    @Override
     public long getId() {
         return id;
     }
@@ -39,22 +35,20 @@ public class District implements Spot, Classifiable {
         this.id = id;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public void setLon(double lon) {
-        this.lon = lon;
-    }
-
-    @Override
     public double getLat() {
         return lat;
     }
 
-    @Override
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
     public double getLon() {
         return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 
     public String getName() {
@@ -65,7 +59,6 @@ public class District implements Spot, Classifiable {
         this.name = name;
     }
 
-    @Override
     public String getNotes() {
         return notes;
     }
@@ -90,24 +83,11 @@ public class District implements Spot, Classifiable {
         this.type = type;
     }
 
-    @Override
     public int getCluster() {
         return cluster;
     }
 
-    @Override
-    public boolean setCluster(int cluster) {
+    public void setCluster(int cluster) {
         this.cluster = cluster;
-        return false;
-    }
-
-    @Override
-    public double getDistance(Classifiable object) {
-        return 0;
-    }
-
-    @Override
-    public Classifiable getMean(List<Classifiable> list) {
-        return null;
     }
 }
