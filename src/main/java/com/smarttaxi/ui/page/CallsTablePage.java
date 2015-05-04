@@ -57,6 +57,11 @@ public class CallsTablePage extends CustomComponent implements View {
 
 
         @Override
+        protected Class getEntityType() {
+            return Call.class;
+        }
+
+        @Override
         protected BeanItemContainer getTableContainer() {
             return new BeanItemContainer<>(
                     Call.class, callDao.getCallList());
@@ -87,7 +92,7 @@ public class CallsTablePage extends CustomComponent implements View {
             }
         }
 
-        public class DeleteAllCallsButton extends Button {
+        private class DeleteAllCallsButton extends Button {
 
             public DeleteAllCallsButton() {
                 setCaption("Delete all");
@@ -107,7 +112,7 @@ public class CallsTablePage extends CustomComponent implements View {
             }
         }
 
-        public class GenerateCallsForm extends Window {
+        private class GenerateCallsForm extends Window {
 
             private TextField textField;
 

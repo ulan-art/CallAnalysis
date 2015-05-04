@@ -20,6 +20,13 @@ CREATE TABLE district (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE log (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  creation_date DATETIME,
+  message VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
 -- 26 apr 2015
 
 # ALTER TABLE taxi.district CHANGE groupn cluster INT;

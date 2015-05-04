@@ -1,6 +1,7 @@
 package com.smarttaxi.config;
 
 import com.smarttaxi.ui.page.CallsTablePage;
+import com.smarttaxi.ui.page.LogsTablePage;
 import com.smarttaxi.ui.page.SpotsTablePage;
 import com.smarttaxi.ui.page.RigaMapPage;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -26,6 +27,7 @@ public class TaxiUI extends UI {
         navigator.addView("RigaMap", RigaMapPage.class);
         navigator.addView("Districts", SpotsTablePage.class);
         navigator.addView("Calls", CallsTablePage.class);
+        navigator.addView("Logs", LogsTablePage.class);
         navigator.navigateTo("RigaMap");
         setNavigator(navigator);
     }

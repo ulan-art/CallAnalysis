@@ -63,6 +63,7 @@ public abstract class CrudPanel extends CustomComponent {
         table.setSelectable(true);
         table.addValueChangeListener(new TableItemClickListener());
         table.setPageLength(20);
+        table.setContainerDataSource(new BeanItemContainer(getEntityType()));
 
         commonLayout.addComponent(buttonsLayout);
         commonLayout.addComponent(table);
@@ -71,6 +72,8 @@ public abstract class CrudPanel extends CustomComponent {
     }
 
     // Crud interface
+
+    protected abstract Class getEntityType(); // TODO generify
 
     protected abstract BeanItemContainer getTableContainer();
 
@@ -87,6 +90,10 @@ public abstract class CrudPanel extends CustomComponent {
 
     protected void setDictionary(Dictionary dictionary) {
         this.dictionary = dictionary;
+        Object[] visibleColumns = table.getVisibleColumns();
+        for (Object propertyId : visibleColumns) {
+            table.setColumnHeader(propertyId, dictionary.getCaption((String) propertyId));
+        }
     }
 
     protected void addNewButton() {
@@ -117,6 +124,10 @@ public abstract class CrudPanel extends CustomComponent {
     protected void toggleButtons(boolean enabled) {
         editButton.setEnabled(enabled);
         deleteButton.setEnabled(enabled);
+    }
+
+    protected void setVisibleColumns(Object... visibleColumns) {
+        table.setVisibleColumns(visibleColumns);
     }
 
     protected void fetchTableContainer() {

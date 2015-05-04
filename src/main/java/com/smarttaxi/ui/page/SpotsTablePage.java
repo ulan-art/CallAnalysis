@@ -3,6 +3,7 @@ package com.smarttaxi.ui.page;
 import com.smarttaxi.config.Application;
 import com.smarttaxi.data.dao.DistrictDao;
 import com.smarttaxi.data.domain.District;
+import com.smarttaxi.data.domain.Spot;
 import com.smarttaxi.model.domain.MarkerType;
 import com.smarttaxi.ui.component.NavigationMenu;
 import com.smarttaxi.ui.crud.CrudPanel;
@@ -65,6 +66,11 @@ public class SpotsTablePage extends CustomComponent implements View {
 
                 addSaveButton();
             }
+        }
+
+        @Override
+        protected Class getEntityType() {
+            return Spot.class;
         }
 
         @Override

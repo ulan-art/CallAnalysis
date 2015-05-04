@@ -22,6 +22,7 @@ public class NavigationMenu extends CustomComponent {
         addButton("Riga", "RigaMap");
         addButton("Districts", "Districts");
         addButton("Calls", "Calls");
+        addButton("Logs", "Logs");
 
         setCompositionRoot(menuLayout);
     }
