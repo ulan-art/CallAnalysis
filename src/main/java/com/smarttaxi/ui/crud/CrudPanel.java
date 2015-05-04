@@ -1,5 +1,6 @@
 package com.smarttaxi.ui.crud;
 
+import com.google.gwt.thirdparty.guava.common.reflect.TypeToken;
 import com.smarttaxi.ui.component.YesNoWindow;
 import com.smarttaxi.ui.service.ContainerService;
 import com.smarttaxi.ui.service.Notifications;
@@ -28,9 +29,12 @@ import java.lang.reflect.InvocationTargetException;
  * Created by Iwan on 22.03.2015
  */
 
-public abstract class CrudPanel extends CustomComponent {
+public abstract class CrudPanel<T> extends CustomComponent {
 
     private final static Logger log = Logger.getLogger(CrudPanel.class);
+
+    private TypeToken<T> typeToken = new TypeToken<T>(getClass()) {
+    };
 
     private String entityName;
     private Dictionary dictionary;
@@ -63,7 +67,7 @@ public abstract class CrudPanel extends CustomComponent {
         table.setSelectable(true);
         table.addValueChangeListener(new TableItemClickListener());
         table.setPageLength(20);
-        table.setContainerDataSource(new BeanItemContainer(getEntityType()));
+        table.setContainerDataSource(new BeanItemContainer<>(typeToken.getRawType()));
 
         commonLayout.addComponent(buttonsLayout);
         commonLayout.addComponent(table);
@@ -72,8 +76,6 @@ public abstract class CrudPanel extends CustomComponent {
     }
 
     // Crud interface
-
-    protected abstract Class getEntityType(); // TODO generify
 
     protected abstract BeanItemContainer getTableContainer();
 
@@ -224,10 +226,9 @@ public abstract class CrudPanel extends CustomComponent {
             center();
 
             if (beanItem == null) {
-                Class beanItemClass = ((BeanItemContainer) table.getContainerDataSource()).getBeanType();
                 try {
                     itemIsNew = true;
-                    beanItem = new BeanItem(beanItemClass.newInstance());
+                    beanItem = new BeanItem<>(typeToken.getRawType().newInstance());
                     setCaption("Create " + entityName);
                 } catch (InstantiationException e) {
                     log.error("InstantiationException when creating new BeanItem");

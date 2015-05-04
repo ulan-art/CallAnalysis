@@ -33,7 +33,7 @@ public class LogsTablePage extends CustomComponent implements View {
         setCompositionRoot(pageLayout);
     }
 
-    private class LogsCrudPanel extends CrudPanel {
+    private class LogsCrudPanel extends CrudPanel<LogRecord> {
 
         public LogsCrudPanel() {
             super();
@@ -43,10 +43,6 @@ public class LogsTablePage extends CustomComponent implements View {
             setVisibleColumns("id", "creationDate", "message");
         }
 
-        @Override
-        protected Class getEntityType() {
-            return LogRecord.class;
-        }
 
         @Override
         protected BeanItemContainer getTableContainer() {

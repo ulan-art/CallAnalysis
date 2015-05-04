@@ -34,7 +34,7 @@ public class SpotsTablePage extends CustomComponent implements View {
         setCompositionRoot(pageLayout);
     }
 
-    private class SpotCrudPanel extends CrudPanel {
+    private class SpotCrudPanel extends CrudPanel<District> {
 
         private DistrictDao districtDao = Application.getContext().getBean(DistrictDao.class);
 
@@ -68,10 +68,6 @@ public class SpotsTablePage extends CustomComponent implements View {
             }
         }
 
-        @Override
-        protected Class getEntityType() {
-            return District.class;
-        }
 
         @Override
         protected BeanItemContainer getTableContainer() {

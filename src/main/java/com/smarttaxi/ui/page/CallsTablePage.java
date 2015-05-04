@@ -45,7 +45,7 @@ public class CallsTablePage extends CustomComponent implements View {
         setCompositionRoot(pageLayout);
     }
 
-    private class CallCrudPanel extends CrudPanel {
+    private class CallCrudPanel extends CrudPanel<Call> {
 
         public CallCrudPanel() {
             super();
@@ -56,11 +56,6 @@ public class CallsTablePage extends CustomComponent implements View {
             setVisibleColumns("id", "notes", "lat", "lon", "cluster");
         }
 
-
-        @Override
-        protected Class getEntityType() {
-            return Call.class;
-        }
 
         @Override
         protected BeanItemContainer getTableContainer() {
