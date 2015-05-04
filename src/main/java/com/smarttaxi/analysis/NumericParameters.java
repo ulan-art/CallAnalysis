@@ -1,6 +1,6 @@
 package com.smarttaxi.analysis;
 
-import com.smarttaxi.spatial.Point;
+import com.smarttaxi.data.domain.Call;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -13,16 +13,22 @@ import java.util.List;
 @Service
 public class NumericParameters {
 
-    public Point mean(List<Point> points) {
-        if (!CollectionUtils.isEmpty(points)) {
+    public static double getDistance(Call call1, Call call2) {
+        return Math.sqrt(
+                Math.pow(call1.getLat() - call2.getLat(), 2) +
+                        Math.pow(call1.getLon() - call2.getLon(), 2));
+    }
+
+    public static Call getMean(List<Call> callList) {
+        if (!CollectionUtils.isEmpty(callList)) {
             double latSum = 0;
             double lonSum = 0;
-            for (Point p : points) {
-                latSum += p.getLat();
-                lonSum += p.getLon();
+            for (Call call : callList) {
+                latSum += call.getLat();
+                lonSum += call.getLon();
             }
-            int n = points.size();
-            Point mean = new Point();
+            int n = callList.size();
+            Call mean = new Call();
             mean.setLat(latSum / n);
             mean.setLon(lonSum / n);
             return mean;
@@ -30,15 +36,15 @@ public class NumericParameters {
         return null;
     }
 
-    public double variance(List<Point> points, Point mean) {
-        if (!CollectionUtils.isEmpty(points) && (mean != null)) {
-
+    public static double empiricalVariance(List<Call> callsList) {
+        if (!CollectionUtils.isEmpty(callsList)) {
+            Call mean = getMean(callsList);
             double s = 0;
-            for (Point point : points) {
-                double d = mean.getDistance(point);
+            for (Call call : callsList) {
+                double d = getDistance(call, mean);
                 s += d * d;
             }
-            int n = points.size();
+            int n = callsList.size();
             return s / n;
         }
         return Double.NaN;

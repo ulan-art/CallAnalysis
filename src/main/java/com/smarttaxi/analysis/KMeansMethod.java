@@ -1,5 +1,8 @@
 package com.smarttaxi.analysis;
 
+import com.smarttaxi.config.Application;
+import com.smarttaxi.data.domain.Call;
+import com.smarttaxi.log.ApplicationLogger;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -14,11 +17,13 @@ public class KMeansMethod {
 
     private final static Logger log = Logger.getLogger(KMeansMethod.class);
 
-    private List<? extends Classifiable> items;
+    private ApplicationLogger appLevelLog = Application.getBean(ApplicationLogger.class);
+
+    private List<Call> items;
     private int k;
     private boolean clustersChanged = true;
 
-    public KMeansMethod(List<? extends Classifiable> items, int k) {
+    public KMeansMethod(List<Call> items, int k) {
         if (items != null) {
             this.items = items;
         } else {
@@ -27,8 +32,8 @@ public class KMeansMethod {
         this.k = k;
     }
 
-    public List<? extends Classifiable> perform() {
-        log.info("K Means analysis performed for k = " + k);
+    public List<Call> perform() {
+        appLevelLog.addRecord("K Means analysis performed for k = " + k);
         if (k == 1) {
             distributeItemsRandomly();
             return items;
@@ -39,11 +44,20 @@ public class KMeansMethod {
         int i = 1;
         while(clustersChanged) {
             clustersChanged = false;
-            List<Classifiable> means = getMeans(clusterList);
+            List<Call> means = getMeans(clusterList);
             clusterList = rearrangeClusters(means);
-            log.info("Performed step " + i + ", clusters changed: " + clustersChanged);
+            balanceClusters(clusterList);
+            appLevelLog.addRecord("Performed step " + i++ + ", clusters changed: " + clustersChanged);
+            for (Cluster cluster : clusterList) {
+                appLevelLog.addFragment("Cluster: " + cluster.getId());
+                appLevelLog.addFragment("Size: " + cluster.size());
+                appLevelLog.addFragment(String.format("Inner variance: %.5f",
+                        NumericParameters.empiricalVariance(cluster.getItems())));
+                appLevelLog.flushBuffer();
+            }
+            appLevelLog.addRecord(String.format("Total variance: %.5f",
+                    NumericParameters.empiricalVariance(means)));
         }
-
         return items;
     }
 
@@ -64,25 +78,25 @@ public class KMeansMethod {
         return clusterList;
     }
 
-    private List<Classifiable> getMeans(List<Cluster> clusterList) {
-        List<Classifiable> means = new ArrayList<>(k);
+    private List<Call> getMeans(List<Cluster> clusterList) {
+        List<Call> means = new ArrayList<>(k);
         for (Cluster cluster : clusterList) {
-            Classifiable centre = cluster.getCentre();
+            Call centre = cluster.getCentre();
             means.add(centre);
         }
         return means;
     }
 
-    private List<Cluster> rearrangeClusters(List<Classifiable> means) {
+    private List<Cluster> rearrangeClusters(List<Call> means) {
         List<Cluster> clusterList = createEmptyClusters();
-        for (Classifiable item : items) {
+        for (Call item : items) {
             int closestCluster = -1;
             double bestDistance = Double.MAX_VALUE;
 
             for (int i = 0; i < k; i++) {
-                Classifiable mean = means.get(i);
+                Call mean = means.get(i);
                 if (mean != null) {
-                    double newDistance = item.getDistance(mean);
+                    double newDistance = NumericParameters.getDistance(item, mean);
                     if (newDistance < bestDistance) {
                         closestCluster = i;
                         bestDistance = newDistance;
@@ -92,5 +106,36 @@ public class KMeansMethod {
             clustersChanged |= clusterList.get(closestCluster).addItem(item);
         }
         return clusterList;
+    }
+
+    private void balanceClusters(List<Cluster> clusterList) {
+        Cluster emptyCluster = getEmptyCluster(clusterList);
+        while (emptyCluster != null) {
+            Cluster mostScatteredCluster = getMostScatteredCluster(clusterList);
+            emptyCluster.addItem(mostScatteredCluster.removeLast());
+            emptyCluster = getEmptyCluster(clusterList);
+        }
+    }
+
+    private Cluster getEmptyCluster(List<Cluster> clusterList) {
+        for (Cluster cluster : clusterList) {
+            if (cluster.size() == 0) {
+                return cluster;
+            }
+        }
+        return null;
+    }
+
+    private Cluster getMostScatteredCluster(List<Cluster> clusterList) {
+        Cluster mostScatteredCluster = null;
+        double maximalVariance = 0;
+        for (Cluster cluster : clusterList) {
+            double empiricalVariance = NumericParameters.empiricalVariance(cluster.getItems());
+            if (empiricalVariance > maximalVariance) {
+                mostScatteredCluster = cluster;
+                maximalVariance = empiricalVariance;
+            }
+        }
+        return mostScatteredCluster;
     }
 }

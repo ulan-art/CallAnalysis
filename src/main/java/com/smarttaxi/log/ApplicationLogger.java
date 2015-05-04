@@ -18,6 +18,8 @@ public class ApplicationLogger {
     @Autowired
     private LogsDao logsDao;
 
+    private StringBuffer stringBuffer;
+
 
     public ApplicationLogger() {
     }
@@ -33,5 +35,18 @@ public class ApplicationLogger {
         logRecord.setCreationDate(new Date());
         logRecord.setMessage(message);
         logsDao.saveLogRecord(logRecord);
+    }
+
+    public void addFragment(String fragment) {
+        if (stringBuffer == null) {
+            stringBuffer = new StringBuffer();
+        }
+        stringBuffer.append(fragment);
+        stringBuffer.append("; ");
+    }
+
+    public void flushBuffer() {
+        addRecord(stringBuffer.toString());
+        stringBuffer = null;
     }
 }
